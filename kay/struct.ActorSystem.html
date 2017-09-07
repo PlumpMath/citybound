@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `ActorSystem` struct in crate `kay`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, ActorSystem">
+
+    <title>kay::ActorSystem - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc struct">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Struct ActorSystem</p><div class="block items"><ul><li><a href="#methods">Methods</a></li></ul></div><p class='location'><a href='index.html'>kay</a></p><script>window.sidebarCurrent = {name: 'ActorSystem', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>kay</a>::<wbr><a class="struct" href=''>ActorSystem</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../src/kay/actor_system.rs.html#24-33' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct ActorSystem { /* fields omitted */ }</pre><div class='docblock'><p>The main thing inside of which all the magic happens.</p>
+
+<p>An <code>ActorSystem</code> contains the states of all registered actors,
+message inboxes (queues) for each registered actor,
+and message dispatchers for each registered (<code>Actor</code>,<code>Message</code>) pair.</p>
+
+<p>It can be controlled from the outside to do message passing and handling in turns.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class="struct" href="../kay/struct.ActorSystem.html" title="struct kay::ActorSystem">ActorSystem</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/kay/actor_system.rs.html#45-253' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class="method"><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(panic_callback: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/trait.Fn.html" title="trait core::ops::Fn">Fn</a>(<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="trait" href="https://doc.rust-lang.org/nightly/core/any/trait.Any.html" title="trait core::any::Any">Any</a>&gt;, &amp;mut <a class="struct" href="../kay/struct.World.html" title="struct kay::World">World</a>)&gt;) -&gt; <a class="struct" href="../kay/struct.ActorSystem.html" title="struct kay::ActorSystem">ActorSystem</a></code></span></h4>
+<div class='docblock'><p>Create a new ActorSystem (usually only one per application is needed).
+Expects to get a panic callback as a parameter that is called when
+an actor panics during message handling and can thus be used to
+for example display the panic error message.</p>
+
+<p>Note that after an actor panicking, the whole <code>ActorSystem</code> switches
+to a panicked state and only passes messages anymore which have been
+marked as <em>critically received</em> using <code>ActorDefiner::on_critical</code>.</p>
+</div><h4 id='method.add' class="method"><span id='add.v' class='invisible'><code>fn <a href='#method.add' class='fnname'>add</a>&lt;A:&nbsp;'static, D:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/trait.Fn.html" title="trait core::ops::Fn">Fn</a>(<a class="struct" href="../kay/struct.ActorDefiner.html" title="struct kay::ActorDefiner">ActorDefiner</a>&lt;A&gt;)&gt;(&amp;mut self, actor: A, define: D)</code></span></h4>
+<div class='docblock'><p>Add a new actor to the system given an initial actor state
+and a closure that takes an <a href="struct.ActorDefiner.html">ActorDefiner</a>
+to define message handlers for this actor.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="ident">system</span>.<span class="ident">add</span>(<span class="ident">Logger</span>::<span class="ident">new</span>(), <span class="op">|</span><span class="kw-2">mut</span> <span class="ident">the_logger</span><span class="op">|</span> {
+    <span class="ident">the_logger</span>.<span class="ident">on</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">Message</span> { <span class="ident">text</span> }, <span class="ident">logger</span>, <span class="ident">world</span><span class="op">|</span> {
+        <span class="comment">//...</span>
+    });
+});</pre>
+</div><h4 id='method.extend' class="method"><span id='extend.v' class='invisible'><code>fn <a href='#method.extend' class='fnname'>extend</a>&lt;A:&nbsp;'static, D:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/trait.Fn.html" title="trait core::ops::Fn">Fn</a>(<a class="struct" href="../kay/struct.ActorDefiner.html" title="struct kay::ActorDefiner">ActorDefiner</a>&lt;A&gt;)&gt;(&amp;mut self, define: D)</code></span></h4>
+<div class='docblock'><p>Extend a previously added actor using a closure that
+takes an <a href="struct.ActorDefiner.html">ActorDefiner</a>
+to define <em>additional</em> message handlers for this actor.</p>
+
+<p>This is useful if you want to implement different <em>aspects</em>
+of an actor in different files.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="ident">system</span>.<span class="ident">extend</span>::<span class="op">&lt;</span><span class="ident">Logger</span>, _<span class="op">&gt;</span>(<span class="op">|</span><span class="kw-2">mut</span> <span class="ident">the_logger</span><span class="op">|</span> {
+    <span class="ident">the_logger</span>.<span class="ident">on</span>(<span class="op">|</span>_: <span class="kw-2">&amp;</span><span class="ident">ClearAll</span>, <span class="ident">logger</span>, <span class="ident">world</span><span class="op">|</span> {
+        <span class="comment">//...</span>
+    });
+});</pre>
+</div><h4 id='method.send' class="method"><span id='send.v' class='invisible'><code>fn <a href='#method.send' class='fnname'>send</a>&lt;M:&nbsp;<a class="trait" href="../kay/trait.Message.html" title="trait kay::Message">Message</a>&gt;(&amp;mut self, recipient: <a class="struct" href="../kay/struct.ID.html" title="struct kay::ID">ID</a>, message: M)</code></span></h4>
+<div class='docblock'><p>Send a message to the actor with a given <code>ID</code>.
+This is only used to send messages into the system from outside.
+Inside actor message handlers you always have access to a
+<a href="struct.World.html"><code>World</code></a> that allows you to send messages.</p>
+</div><h4 id='method.id' class="method"><span id='id.v' class='invisible'><code>fn <a href='#method.id' class='fnname'>id</a>&lt;A2:&nbsp;'static&gt;(&amp;mut self) -&gt; <a class="struct" href="../kay/struct.ID.html" title="struct kay::ID">ID</a></code></span></h4>
+<div class='docblock'><p>Get the ID of a previously added actor.
+This is only used to identify actors from the outside.
+Inside actor message handlers you always have access to a
+<a href="struct.World.html"><code>World</code></a> that allows you to identify actors.</p>
+</div><h4 id='method.process_all_messages' class="method"><span id='process_all_messages.v' class='invisible'><code>fn <a href='#method.process_all_messages' class='fnname'>process_all_messages</a>(&amp;mut self)</code></span></h4>
+<div class='docblock'><p>Processes all sent messages, and messages which are in turn sent
+during the handling of messages, up to a recursion depth of 1000.</p>
+
+<p>This is typically called in the main loop of an application.</p>
+
+<p>By sending different &quot;top-level commands&quot; in to the system and calling
+<code>process_all_messages</code> inbetween, different aspects of an application
+(for example, UI, simulation, rendering) can be run isolated from each other,
+in a fixed order of &quot;turns&quot; during each main-loop iteration.</p>
+</div><h4 id='method.world' class="method"><span id='world.v' class='invisible'><code>fn <a href='#method.world' class='fnname'>world</a>(&amp;mut self) -&gt; <a class="struct" href="../kay/struct.World.html" title="struct kay::World">World</a></code></span></h4>
+<div class='docblock'><p>Get a world context directly from the system, typically to send messages from outside</p>
+</div><h4 id='method.get_subactor_counts' class="method"><span id='get_subactor_counts.v' class='invisible'><code>fn <a href='#method.get_subactor_counts' class='fnname'>get_subactor_counts</a>(&amp;self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/collections/string/struct.String.html" title="struct collections::string::String">String</a></code></span></h4>
+<div class='docblock'><p>Access to debugging statistics</p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "kay";
+    </script>
+    <script src="../main.js"></script>
+    <script defer src="../search-index.js"></script>
+</body>
+</html>
